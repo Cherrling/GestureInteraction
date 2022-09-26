@@ -1,6 +1,10 @@
 # -- coding: utf-8 --
+import os
 import sys
-
+from os import path
+d = path.dirname(__file__)  # 获取当前路径
+parent_path = os.path.dirname(d)  # 获取上一级路径
+sys.path.append(parent_path)    # 如果要导入到包在上一级
 from Abyss.interaction.interaction import Interactor
 from hand_key.models.resnet import resnet50
 from hand_track.tracker import Tracker
@@ -9,7 +13,6 @@ from hand_detection.utils.general import check_img_size, non_max_suppression, sc
 from hand_detection.utils.torch_utils import select_device, time_synchronized
 import numpy as np
 import argparse
-import os
 import time
 from pathlib import Path
 import cv2
@@ -20,7 +23,6 @@ sys.path.insert(0, './hand_detection')
 
 # os.environ['CUDA_ENABLE_DEVICES'] = '0'
 # torch.cuda.set_device(0)
-
 
 def detect(opt):
     # 检查参数--------------------------------------------------------------------------
@@ -193,7 +195,7 @@ def detect(opt):
 def parse_argument():
     parser = argparse.ArgumentParser()
     # file/folder, 0-webcam。不支持图片格式              inference/input/test_video2.mp4
-    parser.add_argument('--source', type=str, default='inference/input/piano.mp4', help='source')
+    parser.add_argument('--source', type=str, default='inference/input/input.mkv', help='source')
     # 输出文件夹
     parser.add_argument('--output', type=str, default='inference/output', help='output folder')
     # 输出视频格式
@@ -201,12 +203,11 @@ def parse_argument():
     # 是否展示结果
     parser.add_argument('--view', default=True, help='display results')
     # 是否保存视频
-    parser.add_argument("--save", type=str, default=False, help='save results')
+    parser.add_argument("--save", type=str, default=True, help='save results')
     # 是否使用显卡+半精度
     parser.add_argument('--device', default='0', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
-
     # yolov5模型路径           hand_v5s/best   best_YOLOv5l  best_yolo5s_half  yolov5l_best
-    parser.add_argument('--yolov5_weights', type=str, default='inference/weights/hand_weight/best_YOLOv5l.pt')
+    parser.add_argument('--yolov5_weights', type=str, default='inference/weights/hand_weight/hand_v5s/best.pt')
     # yolov5输入尺寸
     parser.add_argument('--yolov5_img_size', type=int, default=640, help='inference size (pixels)')
     # yolov5推理时进行多尺度，翻转等操作(TTA)
